@@ -50,7 +50,7 @@ const skills = [
             </h3>
   
             <p className="mt-2 text-sm text-slate-400">
-              LFCA · Linux Foundation
+              LFCA · Linux Foundation · 2026
             </p>
           </div>
         </div>
