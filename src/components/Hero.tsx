@@ -45,7 +45,28 @@ export default function Hero() {
       id="home"
       className="flex scroll-mt-20 items-center pb-12 pt-32 sm:pb-16 sm:pt-36 lg:pb-20 lg:pt-40"
     >
-      <div className="mx-auto w-full max-w-6xl px-6">
+      {/*
+        This CSS applies ONLY to the cinematic
+        version of the homepage.
+
+        The natural scrolling version stays unchanged.
+      */}
+      <style>
+        {`
+          @media
+            (min-width: 1280px)
+            and (min-height: 850px)
+            and (prefers-reduced-motion: no-preference) {
+
+            .portfolio-scene-content
+              .portfolio-hero-content {
+              transform: translate3d(0, -64px, 0);
+            }
+          }
+        `}
+      </style>
+
+      <div className="portfolio-hero-content mx-auto w-full max-w-6xl px-6">
         <div className="max-w-4xl">
           <motion.p
             {...reveal(0.1)}
@@ -104,7 +125,9 @@ export default function Hero() {
             className="mt-12 flex flex-wrap gap-x-10 gap-y-5 border-t border-white/10 pt-7 sm:mt-14"
           >
             <div>
-              <p className="text-2xl font-semibold text-white">03</p>
+              <p className="text-2xl font-semibold text-white">
+                03
+              </p>
               <p className="mt-1 text-sm text-slate-500">
                 Featured Projects
               </p>
