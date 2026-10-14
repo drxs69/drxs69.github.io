@@ -3,7 +3,7 @@ export default function About() {
     return (
       <section
         id="about"
-        className="scroll-mt-24 border-t border-white/10 py-28"
+        className="scroll-mt-24 py-28"
       >
         <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-2">
           <div>

@@ -18,7 +18,7 @@ const skills = [
     return (
       <section
         id="skills"
-        className="scroll-mt-24 border-t border-white/10 py-28"
+        className="scroll-mt-24 py-28"
       >
         <div className="mx-auto max-w-6xl px-6">
           <p className="mb-4 text-xs uppercase tracking-widest text-blue-400">

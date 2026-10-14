@@ -1,5 +1,6 @@
 
 import { useEffect } from "react";
+
 import {
   HashRouter,
   Route,
@@ -15,6 +16,8 @@ import {
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import CustomCursor from "./components/CustomCursor";
+
 import Home from "./pages/Home";
 import ProjectDetail from "./pages/ProjectDetail";
 
@@ -22,23 +25,31 @@ type NavigationState = {
   scrollTo?: string;
 };
 
-// Handles scrolling after a new page has mounted
 function ScrollManager() {
   const location = useLocation();
 
   useEffect(() => {
-    const state = location.state as NavigationState | null;
+    const state =
+      location.state as NavigationState | null;
+
     const targetId = state?.scrollTo;
 
     const frame = requestAnimationFrame(() => {
       if (targetId) {
-        const target = document.getElementById(targetId);
+        const element =
+          document.getElementById(targetId);
 
-        if (target) {
-          target.scrollIntoView({
+        if (element) {
+          const destination =
+            element.getBoundingClientRect().top +
+            window.scrollY -
+            80;
+
+          window.scrollTo({
+            top: Math.max(0, destination),
             behavior: "instant",
-            block: "start",
           });
+
           return;
         }
       }
@@ -57,11 +68,15 @@ function ScrollManager() {
 
 function AnimatedRoutes() {
   const location = useLocation();
+
   const shouldReduceMotion = useReducedMotion();
   const reduceMotion = Boolean(shouldReduceMotion);
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence
+      mode="wait"
+      initial={false}
+    >
       <motion.div
         key={location.pathname}
         initial={
@@ -75,7 +90,7 @@ function AnimatedRoutes() {
         }}
         exit={
           reduceMotion
-            ? { opacity: 1 }
+            ? { opacity: 1, y: 0 }
             : { opacity: 0, y: -12 }
         }
         transition={{
@@ -87,11 +102,16 @@ function AnimatedRoutes() {
         <ScrollManager />
 
         <Routes location={location}>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={<Home />}
+          />
+
           <Route
             path="/projects/:id"
             element={<ProjectDetail />}
           />
+
           <Route
             path="*"
             element={
@@ -112,6 +132,8 @@ export default function App() {
   return (
     <HashRouter>
       <div className="min-h-screen bg-[#090b10] text-white">
+        <CustomCursor />
+
         <Navbar />
 
         <AnimatedRoutes />
