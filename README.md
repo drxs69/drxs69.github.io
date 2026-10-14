@@ -81,6 +81,22 @@ Custom cursors are enabled only on supported devices with a precise pointer and 
 
 The homepage uses two layout modes depending on the browser's CSS viewport dimensions and motion preferences.
 
+### Recommended Viewing Experience
+
+For the best visual experience, the following browser zoom levels are recommended:
+
+| Display Type | Recommended Browser Zoom |
+|---|---|
+| Larger desktop screens and high-resolution monitors | **125%–150%** |
+| Typical laptops | **100%–115%** |
+| Tablets and mobile devices | Default zoom (100%) |
+
+These are visual recommendations rather than technical requirements. The portfolio remains responsive across different viewport sizes and browser zoom levels.
+
+**Note:** Browser zoom affects the effective CSS viewport dimensions. Cinematic scrolling is enabled only when the viewport is at least **1280 × 850 CSS pixels**, Reduced Motion is disabled, and the page is not pinch-zoomed.
+
+Users can and should adjust their browser zoom according to their screen size and personal preference for the best experience.
+
 ### Homepage Layout Breakpoints
 
 **Cinematic mode requires all three conditions:**
