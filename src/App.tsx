@@ -82,9 +82,9 @@ function BackendTestPage() {
           </h1>
 
           <p className="mt-3 max-w-2xl text-slate-400">
-            This temporary development page tests whether
-            the React frontend can communicate with the
-            Python FastAPI backend through HTTP requests.
+            This page checks communication between
+            the React portfolio and the FastAPI backend
+            over HTTP.
           </p>
         </div>
 
@@ -98,7 +98,8 @@ function AnimatedRoutes() {
   const location = useLocation();
 
   const shouldReduceMotion = useReducedMotion();
-  const { motion: motionPreference } = usePreferences();
+  const { motion: motionPreference } =
+    usePreferences();
 
   const reduceMotion =
     Boolean(shouldReduceMotion) ||
@@ -142,6 +143,11 @@ function AnimatedRoutes() {
           <Route
             path="/projects/:id"
             element={<ProjectDetail />}
+          />
+
+          <Route
+            path="/api-status"
+            element={<BackendTestPage />}
           />
 
           {import.meta.env.DEV && (

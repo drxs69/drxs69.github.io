@@ -12,6 +12,7 @@ from fastapi import (
     Response,
     status,
 )
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import (
     HTTPAuthorizationCredentials,
@@ -32,7 +33,7 @@ from database import (
 
 
 # ============================================================
-# 1. API DATA SCHEMAS
+# 1. PYDANTIC SCHEMAS
 # ============================================================
 
 class Project(BaseModel):
@@ -44,15 +45,8 @@ class Project(BaseModel):
 
 
 class ProjectCreate(BaseModel):
-    title: str = Field(
-        min_length=1,
-        max_length=200,
-    )
-
-    category: str = Field(
-        min_length=1,
-        max_length=100,
-    )
+    title: str = Field(min_length=1, max_length=200)
+    category: str = Field(min_length=1, max_length=100)
 
 
 class ProjectUpdate(BaseModel):
@@ -61,7 +55,6 @@ class ProjectUpdate(BaseModel):
         min_length=1,
         max_length=200,
     )
-
     category: str | None = Field(
         default=None,
         min_length=1,
@@ -70,7 +63,7 @@ class ProjectUpdate(BaseModel):
 
 
 # ============================================================
-# 2. DATABASE DEPENDENCY
+# 2. DATABASE SESSION DEPENDENCY
 # ============================================================
 
 def get_db() -> Generator[Session, None, None]:
@@ -79,17 +72,15 @@ def get_db() -> Generator[Session, None, None]:
 
 
 # ============================================================
-# 3. AUTHENTICATION AND AUTHORIZATION
+# 3. ADMIN AUTHENTICATION
 # ============================================================
 
-# Creates the Bearer security scheme in Swagger.
-# auto_error=False lets us return consistent 401 errors.
 bearer_scheme = HTTPBearer(
     auto_error=False,
     scheme_name="AdminBearerToken",
     description=(
-        "Admin-only API token for modifying portfolio "
-        "projects. Do not put this token in frontend code."
+        "Admin token for modifying portfolio projects. "
+        "Never include it in frontend code."
     ),
 )
 
@@ -99,7 +90,6 @@ def require_admin(
         bearer_scheme
     ),
 ) -> None:
-    # Retain the existing local-development write switch.
     write_enabled = (
         os.getenv("WRITE_API_ENABLED", "false").lower()
         == "true"
@@ -145,12 +135,12 @@ def require_admin(
 
 
 # ============================================================
-# 4. DATABASE INITIALIZATION
+# 4. DATABASE INITIALISATION
 # ============================================================
 
 def initialize_database() -> None:
-    # Creates missing tables for this learning project.
-    # A production system should use schema migrations.
+    # Learning setup: create missing tables automatically.
+    # Production schema changes should use migrations.
     Base.metadata.create_all(bind=engine)
 
     with SessionLocal() as session:
@@ -159,26 +149,23 @@ def initialize_database() -> None:
         )
 
         if count == 0:
-            session.add_all(
-                [
-                    ProjectDB(
-                        id=1,
-                        title="AI-Powered Defect Detection",
-                        category="Artificial Intelligence",
-                    ),
-                    ProjectDB(
-                        id=2,
-                        title="ElderGuard Analytics",
-                        category="Machine Learning",
-                    ),
-                    ProjectDB(
-                        id=3,
-                        title="Train Survival",
-                        category="Game Development",
-                    ),
-                ]
-            )
-
+            session.add_all([
+                ProjectDB(
+                    id=1,
+                    title="AI-Powered Defect Detection",
+                    category="Artificial Intelligence",
+                ),
+                ProjectDB(
+                    id=2,
+                    title="ElderGuard Analytics",
+                    category="Machine Learning",
+                ),
+                ProjectDB(
+                    id=3,
+                    title="Train Survival",
+                    category="Game Development",
+                ),
+            ])
             session.commit()
 
 
@@ -195,27 +182,27 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="drxs69 Portfolio API",
     description=(
-        "Portfolio backend with PostgreSQL, CRUD, "
+        "Portfolio backend using PostgreSQL, CRUD, "
         "and admin-only write access"
     ),
-    version="4.0.0",
+    version="4.1.0",
     lifespan=lifespan,
 )
 
 
+# Only trusted frontend origins should receive
+# CORS permission to read API responses.
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://drxs69.github.io",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=False,
-    allow_methods=[
-        "GET",
-        "POST",
-        "PATCH",
-        "DELETE",
-    ],
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=[
         "Accept",
         "Content-Type",
@@ -239,7 +226,6 @@ def health_check():
 
 # ============================================================
 # 7. READ ALL PROJECTS
-# PUBLIC
 # ============================================================
 
 @app.get(
@@ -252,13 +238,11 @@ def get_projects(
     statement = select(ProjectDB).order_by(
         ProjectDB.id
     )
-
     return db.scalars(statement).all()
 
 
 # ============================================================
 # 8. READ ONE PROJECT
-# PUBLIC
 # ============================================================
 
 @app.get(
@@ -281,8 +265,7 @@ def get_project(
 
 
 # ============================================================
-# 9. CREATE PROJECT
-# ADMIN ONLY
+# 9. CREATE PROJECT — ADMIN ONLY
 # ============================================================
 
 @app.post(
@@ -317,8 +300,7 @@ def create_project(
 
 
 # ============================================================
-# 10. UPDATE PROJECT
-# ADMIN ONLY
+# 10. UPDATE PROJECT — ADMIN ONLY
 # ============================================================
 
 @app.patch(
@@ -340,7 +322,7 @@ def update_project(
         )
 
     updates = project_data.model_dump(
-        exclude_unset=True,
+        exclude_unset=True
     )
 
     if not updates:
@@ -373,8 +355,7 @@ def update_project(
 
 
 # ============================================================
-# 11. DELETE PROJECT
-# ADMIN ONLY
+# 11. DELETE PROJECT — ADMIN ONLY
 # ============================================================
 
 @app.delete(
