@@ -14,6 +14,7 @@ import {
   useReducedMotion,
 } from "motion/react";
 
+import { usePreferences } from "./preferences";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
@@ -70,7 +71,8 @@ function AnimatedRoutes() {
   const location = useLocation();
 
   const shouldReduceMotion = useReducedMotion();
-  const reduceMotion = Boolean(shouldReduceMotion);
+  const { motion: motionPreference } = usePreferences();
+  const reduceMotion = Boolean(shouldReduceMotion) || motionPreference === "minimal";
 
   return (
     <AnimatePresence

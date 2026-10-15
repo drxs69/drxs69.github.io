@@ -1,13 +1,21 @@
 
 import { useEffect, useRef, useState } from "react";
-
+import { resetPreferences, setPreference, usePreferences } from "../preferences";
+import type { Preferences } from "../preferences";
 import {
   Link,
   useLocation,
   useNavigate,
 } from "react-router-dom";
 
-type CursorStyle = "rocket" | "neon" | "default";
+type CursorStyle =
+  | "rocket"
+  | "neon"
+  | "crosshair"
+  | "terminal"
+  | "comet"
+  | "pixel"
+  | "default";
 
 const CURSOR_STORAGE_KEY = "drxs69-cursor-style";
 const CURSOR_CHANGE_EVENT = "drxs69-cursor-change";
@@ -27,12 +35,32 @@ const cursorOptions: {
   {
     value: "rocket",
     label: "Rocket",
-    description: "Custom animated cursor",
+    description: "Animated rocket with idle floating",
   },
   {
     value: "neon",
     label: "Neon Ring",
     description: "Glowing dot and trailing ring",
+  },
+  {
+    value: "crosshair",
+    label: "Cyber Crosshair",
+    description: "Rotating cyan targeting reticle",
+  },
+  {
+    value: "terminal",
+    label: "Terminal",
+    description: "Blinking green command-line cursor",
+  },
+  {
+    value: "comet",
+    label: "Comet",
+    description: "Glowing blue cursor with a light trail",
+  },
+  {
+    value: "pixel",
+    label: "Pixel Cursor",
+    description: "Retro pixel-art pointer",
   },
   {
     value: "default",
@@ -41,9 +69,15 @@ const cursorOptions: {
   },
 ];
 
+function isCursorStyle(value: unknown): value is CursorStyle {
+  return cursorOptions.some(
+    (option) => option.value === value
+  );
+}
+
 function getSavedCursorStyle(): CursorStyle {
   if (typeof window === "undefined") {
-    return "rocket";
+    return "default";
   }
 
   try {
@@ -51,18 +85,14 @@ function getSavedCursorStyle(): CursorStyle {
       CURSOR_STORAGE_KEY
     );
 
-    if (
-      saved === "rocket" ||
-      saved === "neon" ||
-      saved === "default"
-    ) {
+    if (isCursorStyle(saved)) {
       return saved;
     }
   } catch {
     // Keep the default if storage is unavailable.
   }
 
-  return "rocket";
+  return "default";
 }
 
 function scrollToTarget(id: string) {
@@ -80,7 +110,9 @@ function scrollToTarget(id: string) {
 
   window.scrollTo({
     top: Math.max(0, destination),
-    behavior: prefersReducedMotion ? "auto" : "smooth",
+    behavior: prefersReducedMotion
+      ? "auto"
+      : "smooth",
   });
 }
 
@@ -98,8 +130,8 @@ function SettingsIcon() {
       aria-hidden="true"
     >
       <path d="M4 7h16M4 17h16" />
-      <circle cx="9" cy="7" r="2" fill="#090b10" />
-      <circle cx="15" cy="17" r="2" fill="#090b10" />
+      <circle cx="9" cy="7" r="2" fill="var(--portfolio-surface, #090b10)" />
+      <circle cx="15" cy="17" r="2" fill="var(--portfolio-surface, #090b10)" />
     </svg>
   );
 }
@@ -129,6 +161,59 @@ function CursorOptionIcon({
     );
   }
 
+  if (style === "crosshair") {
+    return (
+      <svg width="30" height="30" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+        <g stroke="#67e8f9" strokeWidth="1.35" strokeLinecap="round">
+          <path d="M18 1V9M18 27V35M1 18H9M27 18H35" />
+        </g>
+        <circle cx="18" cy="18" r="11.5" stroke="#22d3ee" strokeWidth="1.6" strokeDasharray="11 6 3 7"/>
+        <circle cx="18" cy="18" r="7.8" stroke="#a5f3fc" strokeWidth="1.2" />
+        <circle cx="18" cy="18" r="2" fill="#efffff" />
+      </svg>
+    );
+  }
+
+  if (style === "terminal") {
+    return (
+      <svg width="30" height="26" viewBox="0 0 30 26" fill="none" aria-hidden="true">
+        <rect x="1" y="3" width="28" height="20" rx="4" fill="#081b14" stroke="#4ade80" strokeOpacity=".85"/>
+        <path d="M6 9L11 13L6 17" stroke="#86efac" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M13 18H22" stroke="#bbf7d0" strokeWidth="2" strokeLinecap="round"/>
+        <circle cx="25" cy="7" r="1.3" fill="#4ade80"/>
+      </svg>
+    );
+  }
+
+  if (style === "comet") {
+    return (
+      <svg width="31" height="30" viewBox="0 0 32 30" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="prefs-comet-trail" x1="2" y1="26" x2="25" y2="7" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#0284c7" stopOpacity="0"/>
+            <stop offset=".65" stopColor="#22d3ee" stopOpacity=".65"/>
+            <stop offset="1" stopColor="#e0f2fe"/>
+          </linearGradient>
+        </defs>
+        <path d="M2 27Q12 23 23 9" stroke="url(#prefs-comet-trail)" strokeWidth="7" strokeLinecap="round"/>
+        <path d="M8 25Q16 18 24 8" stroke="#bae6fd" strokeOpacity=".7" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="24" cy="8" r="4.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="1.7"/>
+        <circle cx="8" cy="17" r="1" fill="#38bdf8"/>
+        <circle cx="16" cy="26" r=".8" fill="#67e8f9"/>
+      </svg>
+    );
+  }
+
+  if (style === "pixel") {
+    return (
+      <svg width="24" height="28" viewBox="0 0 20 26" fill="none" shapeRendering="crispEdges" aria-hidden="true">
+        <path d="M0 0H2V2H4V4H6V6H8V8H10V10H12V12H14V14H16V16H18V18H12V20H14V22H16V26H12V24H10V20H8V18H6V22H4V24H2V26H0Z" fill="#052e16"/>
+        <path d="M2 3H4V5H6V7H8V9H10V11H12V13H14V15H16V16H10V18H8V16H6V19H4V22H2Z" fill="#4ade80"/>
+        <path d="M2 4V10H4V8H6V6H4V4Z" fill="#dcfce7"/>
+      </svg>
+    );
+  }
+
   return (
     <svg
       width="22"
@@ -153,6 +238,7 @@ export default function Navbar() {
     useState<CursorStyle>(getSavedCursorStyle);
 
   const settingsRef = useRef<HTMLDivElement>(null);
+  const preferences = usePreferences();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -198,9 +284,29 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    function handleStorage(event: StorageEvent) {
+      if (event.key === CURSOR_STORAGE_KEY) {
+        setCursorStyle(getSavedCursorStyle());
+      }
+    }
+
+    window.addEventListener(
+      "storage",
+      handleStorage
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        handleStorage
+      );
+    };
+  }, []);
+
   function changeCursorStyle(next: CursorStyle) {
     setCursorStyle(next);
-    setSettingsOpen(false);
+    // Keep settings open while visitors experiment.
 
     try {
       window.localStorage.setItem(
@@ -286,7 +392,7 @@ export default function Navbar() {
           >
             <button
               type="button"
-              aria-label="Cursor settings"
+              aria-label="Website settings"
               aria-haspopup="true"
               aria-expanded={settingsOpen}
               aria-controls="cursor-settings-menu"
@@ -304,84 +410,62 @@ export default function Navbar() {
             </button>
 
             {settingsOpen && (
-              <div
-                id="cursor-settings-menu"
-                className="absolute right-0 top-[calc(100%+14px)] z-[80] w-[278px] max-w-[calc(100vw-32px)] overflow-hidden rounded-xl border border-white/[0.12] bg-[#101722] p-2 shadow-[0_22px_65px_rgba(0,0,0,0.5)]"
-              >
-                <div className="border-b border-white/[0.08] px-3 pb-3 pt-2">
-                  <p className="text-sm font-semibold text-white">
-                    Cursor Style
-                  </p>
-
-                  <p className="mt-1 text-xs leading-5 text-slate-400">
-                    Personalise how you explore.
-                  </p>
+              <div id="cursor-settings-menu" role="dialog" aria-label="Website preferences"
+                className="portfolio-settings-panel absolute right-0 top-[calc(100%+14px)] z-[80] flex max-h-[min(78dvh,700px)] w-[350px] max-w-[calc(100vw-24px)] flex-col overflow-hidden rounded-xl border border-white/15 bg-[#101722] shadow-[0_22px_65px_rgba(0,0,0,0.5)]">
+                <div className="flex shrink-0 items-center gap-2.5 border-b border-white/10 px-5 py-4">
+                  <SettingsIcon />
+                  <p className="text-base font-semibold text-white">Preferences</p>
                 </div>
-
-                <div
-                  role="group"
-                  aria-label="Choose cursor style"
-                  className="space-y-1 py-2"
-                >
-                  {cursorOptions.map((option) => {
-                    const selected =
-                      cursorStyle === option.value;
-
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        aria-pressed={selected}
-                        onClick={() =>
-                          changeCursorStyle(
-                            option.value
-                          )
-                        }
-                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-blue-400 ${
-                          selected
-                            ? "bg-blue-400/[0.10]"
-                            : "hover:bg-white/[0.05]"
-                        }`}
-                      >
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-[#0c111a]">
-                          <CursorOptionIcon
-                            style={option.value}
-                          />
-                        </span>
-
-                        <span className="min-w-0 flex-1">
-                          <span
-                            className={`block text-sm font-medium ${
-                              selected
-                                ? "text-blue-300"
-                                : "text-slate-200"
-                            }`}
-                          >
-                            {option.label}
-                          </span>
-
-                          <span className="mt-0.5 block text-[11px] leading-4 text-slate-500">
-                            {option.description}
-                          </span>
-                        </span>
-
-                        {selected && (
-                          <span
-                            aria-hidden="true"
-                            className="text-blue-400"
-                          >
-                            ✓
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
+                <div className="min-h-0 space-y-5 overflow-y-auto overscroll-contain p-4">
+                  <p className="text-xs text-slate-400">Personalise your experience. For the best experience, use dark mode.</p>
+                  <fieldset className="space-y-2">
+                    <legend className="text-xs font-semibold text-slate-200">Accent colour</legend>
+                    <div className="flex flex-wrap gap-3">
+                      {(["blue", "cyan", "purple", "green", "orange"] as const).map((color) => (
+                        <button key={color} type="button" title={color} aria-label={`${color} accent`}
+                          aria-pressed={preferences.accent === color}
+                          onClick={() => setPreference("accent", color)}
+                          className={`portfolio-swatch portfolio-swatch-${color} h-8 w-8 rounded-full border-2 ${preferences.accent === color ? "border-white scale-110" : "border-transparent"}`}
+                        >{preferences.accent === color && <span aria-hidden="true" className="text-xs font-bold text-white">✓</span>}</button>
+                      ))}
+                    </div>
+                  </fieldset>
+                  {([
+                    { key: "motion", label: "Animation intensity", options: [["full", "Full"], ["balanced", "Balanced"], ["minimal", "Minimal"]] },
+                    { key: "display", label: "Display mode", options: [["cinematic", "Cinematic"], ["standard", "Standard"]] },
+                    { key: "cursorEffects", label: "Cursor effects", options: [["off", "Off"], ["subtle", "Subtle"], ["full", "Full"]] },
+                    { key: "theme", label: "Theme", options: [["dark", "Dark"], ["light", "Light"], ["system", "System"]] },
+                  ] as const).map((group) => (
+                    <fieldset key={group.key} className="space-y-2">
+                      <legend className="text-xs font-semibold text-slate-200">{group.label}</legend>
+                      <div className="flex gap-1 rounded-lg border border-white/10 bg-white/[0.04] p-1">
+                        {group.options.map(([value, label]) => (
+                          <button type="button" key={value} aria-pressed={preferences[group.key] === value}
+                            onClick={() => setPreference(group.key, value as Preferences[typeof group.key])}
+                            className={`flex-1 rounded-md px-2 py-2 text-[11px] font-medium transition-colors ${preferences[group.key] === value ? "portfolio-setting-selected text-white" : "text-slate-400 hover:bg-white/10 hover:text-white"}`}
+                          >{label}</button>
+                        ))}
+                      </div>
+                    </fieldset>
+                  ))}
+                  <fieldset className="space-y-2">
+                    <legend className="text-xs font-semibold text-slate-200">Cursor style</legend>
+                    <div className="grid grid-cols-2 gap-2">
+                      {cursorOptions.map((option) => (
+                        <button type="button" key={option.value} aria-pressed={cursorStyle === option.value}
+                          onClick={() => changeCursorStyle(option.value)}
+                          className={`flex items-center gap-2 rounded-lg border px-2 py-2 text-left text-xs transition-colors ${cursorStyle === option.value ? "portfolio-setting-selected border-white/30 text-white" : "border-white/10 text-slate-300 hover:bg-white/10"}`}
+                        ><span className="flex h-7 w-7 shrink-0 items-center justify-center"><CursorOptionIcon style={option.value}/></span>
+                          <span>{option.label}</span></button>
+                      ))}
+                    </div>
+                  </fieldset>
                 </div>
-
-                <p className="border-t border-white/[0.08] px-3 py-3 text-[11px] leading-5 text-slate-500">
-                  Saved automatically. Custom cursors
-                  are available with a mouse.
-                </p>
+                <div className="flex shrink-0 items-center justify-between border-t border-white/10 px-4 py-3">
+                  <span className="text-[11px] text-slate-400">Saved automatically</span>
+                  <button type="button" onClick={() => { resetPreferences(); changeCursorStyle("default"); }}
+                    className="rounded-md border border-white/20 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10">Reset defaults</button>
+                </div>
               </div>
             )}
           </div>

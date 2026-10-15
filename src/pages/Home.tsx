@@ -15,6 +15,8 @@ import {
   useTransform,
 } from "motion/react";
 
+import { usePreferences } from "../preferences";
+
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
 import About from "../components/About";
@@ -245,7 +247,9 @@ function getCurrentSceneIndex(
  * It saves the current scene before changing modes.
  */
 function useCinematicMode(
-  pendingSceneRef: React.RefObject<number | null>
+  pendingSceneRef: React.RefObject<number | null>,
+  display: "cinematic" | "standard",
+  minimal: boolean
 ) {
   const [enabled, setEnabled] = useState(() => {
     if (typeof window === "undefined") {
@@ -253,6 +257,8 @@ function useCinematicMode(
     }
 
     return (
+      display === "cinematic" &&
+      !minimal &&
       window.matchMedia(desktopQuery).matches &&
       !isPinchZoomed()
     );
@@ -266,7 +272,8 @@ function useCinematicMode(
 
     function update() {
       const next =
-        media.matches && !isPinchZoomed();
+        display === "cinematic" &&
+        !minimal && media.matches && !isPinchZoomed();
 
       if (next === enabledRef.current) {
         return;
@@ -305,7 +312,7 @@ function useCinematicMode(
 
       window.removeEventListener("resize", update);
     };
-  }, [pendingSceneRef]);
+  }, [pendingSceneRef, display, minimal]);
 
   return enabled;
 }
@@ -494,8 +501,9 @@ export default function Home() {
     null
   );
 
+  const { display, motion } = usePreferences();
   const cinematic = useCinematicMode(
-    pendingSceneRef
+    pendingSceneRef, display, motion === "minimal"
   );
 
   /*

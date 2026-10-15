@@ -29,3 +29,273 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Portfolio visitor preferences — original blue/dark styling remains the default. */
+:root {
+  --portfolio-accent: #60a5fa;
+  --portfolio-accent-strong: #3b82f6;
+  --portfolio-accent-rgb: 59, 130, 246;
+  --portfolio-surface: #090b10;
+  --portfolio-text: #ffffff;
+}
+:root[data-accent="cyan"] { --portfolio-accent:#22d3ee; --portfolio-accent-strong:#06b6d4; --portfolio-accent-rgb:6,182,212; }
+:root[data-accent="purple"] { --portfolio-accent:#c084fc; --portfolio-accent-strong:#a855f7; --portfolio-accent-rgb:168,85,247; }
+:root[data-accent="green"] { --portfolio-accent:#4ade80; --portfolio-accent-strong:#22c55e; --portfolio-accent-rgb:34,197,94; }
+:root[data-accent="orange"] { --portfolio-accent:#fb923c; --portfolio-accent-strong:#f97316; --portfolio-accent-rgb:249,115,22; }
+
+/* Tailwind utility colours are still used for spacing and layout; override
+   only the site accent utilities, without recolouring the custom cursor art. */
+:root[data-accent]:not([data-accent="blue"]) :is([class*="text-blue-"],[class*="text-cyan-"]):not(.terminal-prompt):not(.terminal-cursor):not(.crosshair-cursor) {
+  color: var(--portfolio-accent) !important;
+}
+:root[data-accent]:not([data-accent="blue"]) :is([class*="bg-blue-"],[class*="bg-cyan-"]):not(.atmosphere):not(.comet-head) {
+  background-color: rgba(var(--portfolio-accent-rgb),.28) !important;
+}
+:root[data-accent]:not([data-accent="blue"]) :is([class*="border-blue-"],[class*="border-cyan-"]) {
+  border-color: rgba(var(--portfolio-accent-rgb),.6) !important;
+}
+:root[data-accent]:not([data-accent="blue"]) :is([class*="from-blue-"],[class*="from-cyan-"]) {
+  --tw-gradient-from: var(--portfolio-accent-strong) !important;
+}
+:root[data-accent]:not([data-accent="blue"]) :is([class*="to-blue-"],[class*="to-cyan-"]) {
+  --tw-gradient-to: var(--portfolio-accent-strong) !important;
+}
+:root[data-accent]:not([data-accent="blue"]) .atmosphere-project-glow,
+:root[data-accent]:not([data-accent="blue"]) .atmosphere-about-glow,
+:root[data-accent]:not([data-accent="blue"]) .atmosphere-skills-glow {
+  background-color: rgba(var(--portfolio-accent-rgb),.10) !important;
+}
+::selection { background:var(--portfolio-accent-strong); color:white; }
+.portfolio-setting-selected { background:rgba(var(--portfolio-accent-rgb),.28) !important; }
+.portfolio-swatch-blue { background:#3b82f6; }
+.portfolio-swatch-cyan { background:#06b6d4; }
+.portfolio-swatch-purple { background:#a855f7; }
+.portfolio-swatch-green { background:#22c55e; }
+.portfolio-swatch-orange { background:#f97316; }
+
+/* Balanced retains motion but slows the decorative atmosphere. */
+:root[data-motion="balanced"] .atmosphere,
+:root[data-motion="balanced"] .atmosphere * {
+  animation-duration: 18s !important;
+}
+:root[data-motion="balanced"] .atmosphere { opacity:.75; }
+:root[data-motion="balanced"] .atmosphere-scan,
+:root[data-motion="balanced"] .atmosphere-skills-speck,
+:root[data-motion="balanced"] .atmosphere-circuit-node { animation-play-state:paused !important; }
+
+/* Minimal motion pauses decorative animation without removing content. */
+:root[data-motion="minimal"] .atmosphere *,
+:root[data-motion="minimal"] .atmosphere,
+:root[data-motion="minimal"] .aurora-background *,
+:root[data-motion="minimal"] [class*="animate-"] {
+  animation:none !important;
+  transition-duration:0ms !important;
+}
+:root[data-motion="minimal"] .atmosphere-skills-particle { display:none !important; }
+:root[data-motion="minimal"] { scroll-behavior:auto !important; }
+
+/* Cursor effects levels keep cursor symbols visible and clickable. */
+:root[data-cursor-effects="off"] .rocket-flames,
+:root[data-cursor-effects="off"] .rocket-sparks,
+:root[data-cursor-effects="off"] .rocket-engine-glow { opacity:0 !important; animation:none !important; }
+:root[data-cursor-effects="off"] .crosshair-artwork,
+:root[data-cursor-effects="off"] .pixel-artwork { filter:none !important; }
+:root[data-cursor-effects="off"] .comet-head { animation:none !important; box-shadow:none !important; }
+:root[data-cursor-effects="off"] .terminal-shell { box-shadow:none !important; }
+:root[data-cursor-effects="subtle"] .rocket-sparks { display:none !important; }
+:root[data-cursor-effects="subtle"] .comet-head { box-shadow:0 0 8px rgba(56,189,248,.55) !important; }
+:root[data-cursor-effects="subtle"] .crosshair-artwork { filter:none !important; }
+:root[data-cursor-effects="subtle"] .terminal-shell { box-shadow:0 0 5px rgba(34,197,94,.2) !important; }
+
+/* The site was authored for a dark palette. Light mode updates all major
+   surfaces and text utilities while retaining the original layout. */
+:root[data-theme="light"] { color-scheme:light; --portfolio-surface:#f4f7fb; --portfolio-text:#142033; }
+:root[data-theme="light"] body { background:#f4f7fb; color:#142033; }
+:root[data-theme="light"] :is([class*="bg-[#090b10]"],[class*="bg-[#101722]"]) { background-color:#f4f7fb !important; }
+:root[data-theme="light"] :is([class*="bg-slate-900"],[class*="bg-[#0c111a]"]) { background-color:#e6ecf5 !important; }
+:root[data-theme="light"] [class*="text-white"] { color:#142033 !important; }
+:root[data-theme="light"] :is([class*="text-slate-200"],[class*="text-slate-300"],[class*="text-slate-400"],[class*="text-slate-500"]) { color:#4b5b72 !important; }
+:root[data-theme="light"] [class*="border-white"] { border-color:rgba(24,42,66,.18) !important; }
+:root[data-theme="light"] .portfolio-settings-panel { background:#fff !important; box-shadow:0 20px 55px rgba(30,40,60,.17); }
+:root[data-theme="light"] .portfolio-setting-selected { background:rgba(var(--portfolio-accent-rgb),.15) !important; }
+:root[data-theme="light"] .atmosphere-fade { opacity:0.08; }
+:root[data-theme="light"] .atmosphere { opacity:.4; }
+:root[data-theme="light"] .terminal-shell,
+:root[data-theme="light"] .comet-head { color-scheme:dark; }
+
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere *, .atmosphere { animation:none !important; }
+  .atmosphere-skills-particle { display:none !important; }
+}
+
+:root[data-motion="minimal"] .crosshair-inner,
+:root[data-motion="minimal"] .comet-head,
+:root[data-motion="minimal"] .rocket-artwork,
+:root[data-motion="minimal"] .rocket-flames,
+:root[data-motion="minimal"] .terminal-caret { animation:none !important; }
+
+/* Light appearance: adapt authored hard-coded dark components, not images. */
+:root[data-theme="light"] {
+  --portfolio-surface: #f4f7fb;
+  --portfolio-text: #17243a;
+  --portfolio-panel: #ffffff;
+  --portfolio-muted: #536279;
+  color-scheme: light;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] #root { background-color: #f4f7fb; color: #17243a; }
+
+/* These content containers were designed with dark arbitrary Tailwind values.
+   Keep images, videos, screenshots, and canvas graphics completely unchanged. */
+:root[data-theme="light"] :is(main, footer, header, .portfolio-settings-panel)
+  :is([class*="bg-[#0"], [class*="bg-[#1"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-gray-950"], [class*="bg-zinc-950"]):not(img):not(video):not(canvas):not(.terminal-shell):not(.comet-head):not(.pixel-cursor):not(.rocket-cursor-object) {
+  background-color: #ffffff !important;
+}
+:root[data-theme="light"] :is(main, footer, header)
+  :is([class*="bg-[#0"], [class*="bg-[#1"], [class*="bg-slate-950"], [class*="bg-slate-900"]) :is(h1,h2,h3,h4,p,span,li) {
+  text-shadow: none;
+}
+:root[data-theme="light"] :is([class*="bg-white/5"], [class*="bg-white/[0.0"], [class*="bg-white/10"], [class*="bg-slate-800"], [class*="bg-zinc-900"]) {
+  background-color: rgba(220,231,245,.55) !important;
+}
+:root[data-theme="light"] :is([class*="text-slate-100"], [class*="text-zinc-100"], [class*="text-gray-100"], [class*="text-neutral-100"]) { color: #1c2d43 !important; }
+:root[data-theme="light"] :is([class*="text-slate-500"], [class*="text-slate-600"], [class*="text-zinc-400"], [class*="text-gray-400"]) { color: #536279 !important; }
+:root[data-theme="light"] :is([class*="border-slate-800"], [class*="border-slate-700"], [class*="border-zinc-800"]) { border-color: rgba(48,70,102,.2) !important; }
+:root[data-theme="light"] :is([class*="ring-white/"], [class*="ring-slate-700"]) { --tw-ring-color: rgba(48,70,102,.2) !important; }
+:root[data-theme="light"] .portfolio-settings-panel { color: #17243a; background-color: #ffffff !important; }
+:root[data-theme="light"] .portfolio-settings-panel :is([class*="bg-white/["], [class*="hover:bg-white/"]) { background-color: #eff3fa !important; }
+:root[data-theme="light"] .portfolio-settings-panel .portfolio-setting-selected { color: #14243a !important; }
+:root[data-theme="light"] .atmosphere-fade {
+  opacity: 1 !important;
+  background: linear-gradient(to bottom,#f4f7fb 0%, transparent 22%, transparent 76%,#f4f7fb 100%) !important;
+}
+:root[data-theme="light"] .atmosphere-grid { opacity: .35; }
+:root[data-theme="light"] .atmosphere-project-glow,
+:root[data-theme="light"] .atmosphere-about-glow,
+:root[data-theme="light"] .atmosphere-skills-glow { opacity: .4; }
+
+/* Preserve actual screenshots and graphical previews: they should remain
+   dark if their original source media is dark. */
+:root[data-theme="light"] :is(img,video,canvas,iframe) { filter: none; }
+
+/* Cursor contrast: additional dark edging is only enabled in light mode. */
+:root[data-theme="light"] .crosshair-artwork {
+  filter: drop-shadow(0 0 1px #17334b) drop-shadow(0 0 2px #0e2740) !important;
+}
+:root[data-theme="light"] .crosshair-artwork circle,
+:root[data-theme="light"] .crosshair-artwork path { stroke-width: 1.5; }
+:root[data-theme="light"] .rocket-artwork { filter: drop-shadow(0 1px 2px rgba(10,20,35,.75)); }
+:root[data-theme="light"] .terminal-cursor .terminal-shell { border-color:#125b31; box-shadow:0 1px 3px rgba(0,0,0,.4),0 0 0 1px rgba(8,50,24,.25); }
+:root[data-theme="light"] .comet-cursor .comet-head {
+  background:#f9ffff;
+  box-shadow:0 0 0 1.5px #17658b,0 0 6px 3px #38bdf8,0 0 14px 5px rgba(14,165,233,.55) !important;
+}
+:root[data-theme="light"] .pixel-artwork { filter: drop-shadow(0 1px 1px #052e16) drop-shadow(0 0 2px #166534) !important; }
+:root[data-theme="light"].portfolio-custom-cursor-enabled .h-1.w-1.rounded-full.bg-cyan-200 {
+  background-color:#0369a1 !important;
+  box-shadow:0 0 0 1px #e0f2fe,0 0 4px #0369a1 !important;
+}
+:root[data-theme="light"].portfolio-custom-cursor-enabled .h-7.w-7.rounded-full.border { border-color:#0369a1 !important; }
+:root[data-theme="light"] .portfolio-settings-panel .portfolio-swatch { border-color:rgba(15,23,42,.3); }
+:root[data-theme="light"] .portfolio-settings-panel .portfolio-swatch[aria-pressed="true"] { outline:2px solid #233a55; outline-offset:2px; }
+
+/* ===== Light-mode corrections: 2026-10-15 ===== */
+/* The original detail header ends in a dark gradient. Replace that gradient
+   rather than trying to obscure it with a white background underneath. */
+:root[data-theme="light"] main > section:first-child > [aria-hidden="true"] > .bg-gradient-to-t {
+  background-image: linear-gradient(to top, #f4f7fb 0%, rgba(244,247,251,0) 100%) !important;
+}
+
+/* Architecture surfaces: readable labels and gentle tone-by-tone accents. */
+:root[data-theme="light"] [class*="bg-[#0e131d]"] {
+  background: #fdfefe !important;
+  border-color: #cfdae9 !important;
+}
+:root[data-theme="light"] [class*="bg-[#111824]"] {
+  background: #ffffff !important;
+  border-color: #cbd8e8 !important;
+  box-shadow: 0 3px 14px rgba(35,57,83,.035);
+}
+:root[data-theme="light"] [class*="bg-[#111824]"] > .bg-gradient-to-br {
+  background-image: linear-gradient(135deg,rgba(69,133,220,.10),transparent 72%) !important;
+  background-color:transparent !important;
+}
+:root[data-theme="light"] [class*="bg-[#111824]"][class*="border-violet-"] {
+  border-color:#c6b6ea !important;
+}
+:root[data-theme="light"] [class*="bg-[#111824]"][class*="border-violet-"] > .bg-gradient-to-br {
+  background-image:linear-gradient(135deg,rgba(147,97,214,.13),transparent 75%) !important;
+}
+:root[data-theme="light"] [class*="bg-[#111824]"][class*="border-cyan-"] {
+  border-color:#91ccd8 !important;
+}
+:root[data-theme="light"] [class*="bg-[#111824]"][class*="border-cyan-"] > .bg-gradient-to-br {
+  background-image:linear-gradient(135deg,rgba(0,156,192,.11),transparent 75%) !important;
+}
+:root[data-theme="light"] [class*="bg-[#111824]"] h4 { color:#15243a !important; }
+:root[data-theme="light"] [class*="bg-[#111824]"] p { color:#465b72 !important; }
+:root[data-theme="light"] [class*="bg-[#111824]"] .font-mono { color:#425a75 !important; }
+:root[data-theme="light"] [class*="bg-[#111824]"][class*="border-violet-"] .font-mono { color:#7544af !important; }
+:root[data-theme="light"] [class*="bg-[#111824]"][class*="border-cyan-"] .font-mono { color:#087c94 !important; }
+:root[data-theme="light"] [class*="bg-[#111824]"] [class*="bg-violet-"] { background-color:#9865d4 !important; }
+:root[data-theme="light"] [class*="bg-[#111824]"] [class*="bg-cyan-"] { background-color:#0894b3 !important; }
+
+/* Preserve the project navigation images. Previously an opaque white
+   override covered the photos; make the overlay explicitly translucent. */
+:root[data-theme="light"] .portfolio-project-navigation {
+  background-color:#e8eef6 !important;
+}
+:root[data-theme="light"] .portfolio-project-navigation-image {
+  opacity:.77 !important;
+  filter:saturate(1.07) contrast(1.03) !important;
+}
+:root[data-theme="light"] .portfolio-project-navigation-fade {
+  background-color:transparent !important;
+  background-image:linear-gradient(90deg,rgba(245,248,252,.87),rgba(245,248,252,.37),rgba(245,248,252,.67)) !important;
+}
+:root[data-theme="light"] .portfolio-project-navigation-shade {
+  background-color:transparent !important;
+}
+:root[data-theme="light"] .portfolio-project-navigation-diamond {background:#fff !important;}
+:root[data-theme="light"] .portfolio-project-navigation-link h3 {color:#16344e !important;}
+:root[data-theme="light"] .portfolio-project-navigation-link p,
+:root[data-theme="light"] .portfolio-project-navigation-link .uppercase {color:#344e67 !important;}
+:root[data-theme="light"] .portfolio-project-navigation-link:hover .portfolio-project-navigation-fade {opacity:.8;}
+
+/* Photo containers retain the natural sharp image over a blurred duplicate. */
+.portfolio-gallery-frame {isolation:isolate;}
+.portfolio-gallery-backdrop {z-index:0; opacity:.7;}
+.portfolio-gallery-veil {z-index:1; background:rgba(2,8,20,.2);}
+:root[data-theme="light"] .portfolio-gallery-frame {background:#dbe5f0 !important;}
+:root[data-theme="light"] .portfolio-gallery-veil {background:rgba(239,246,254,.12) !important;}
+/* Image viewer should remain dark in either theme for accurate media contrast. */
+:root[data-theme="light"] .portfolio-gallery-dialog {background:#070b12 !important;color:#fff !important;}
+:root[data-theme="light"] .portfolio-gallery-dialog :is(h1,h2,h3,p,span,button) {color:#e7edf8 !important;}
+:root[data-theme="light"] .portfolio-gallery-expanded {background:#0b1220;}
+
+/* Light scenes need more contrast, not the old .4 opacity. */
+:root[data-theme="light"] .atmosphere { opacity:1 !important; }
+:root[data-theme="light"] .atmosphere-grid {opacity:.95 !important;}
+:root[data-theme="light"] .atmosphere-project-glow,
+:root[data-theme="light"] .atmosphere-about-glow,
+:root[data-theme="light"] .atmosphere-skills-glow,
+:root[data-theme="light"] .atmosphere-skills-secondary-glow { opacity:1 !important; }
+:root[data-theme="light"] .atmosphere-project-glow {background-color:rgba(59,130,246,.13) !important;}
+:root[data-theme="light"] .atmosphere-about-glow {background-color:rgba(99,102,241,.10) !important;}
+:root[data-theme="light"] .atmosphere-skills-glow {background-color:rgba(6,182,212,.10) !important;}
+:root[data-theme="light"] .atmosphere-circuit-pulse,
+:root[data-theme="light"] .atmosphere-stream {opacity:1 !important;filter:drop-shadow(0 0 2px rgba(8,145,178,.20));}
+:root[data-theme="light"] .atmosphere-orbit-system {opacity:.78 !important;}
+:root[data-theme="light"] .atmosphere-about-aura {opacity:.85 !important;}
+:root[data-theme="light"] .atmosphere-fade {
+  background:linear-gradient(to bottom,#f4f7fb 0%,transparent 12%,transparent 88%,#f4f7fb 100%) !important;
+}
+:root[data-theme="light"] .atmosphere-status-dot,
+:root[data-theme="light"] .atmosphere-processing-bars,
+:root[data-theme="light"] .atmosphere-orbit-label {opacity:.85 !important;}
+
+/* Keep every reduced-motion override authoritative. */
+@media (prefers-reduced-motion:reduce) {
+  :root[data-theme="light"] .atmosphere-circuit-pulse,
+  :root[data-theme="light"] .atmosphere-stream {animation:none !important;}
+}
