@@ -1,5 +1,9 @@
 
 services:
+
+  # ==========================================================
+  # POSTGRESQL DATABASE
+  # ==========================================================
   postgres:
     image: postgres:17
     container_name: drxs69-postgres
@@ -23,6 +27,29 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  # ==========================================================
+  # FASTAPI BACKEND
+  # ==========================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: drxs69-api
+    restart: unless-stopped
+
+    environment:
+      DATABASE_URL: postgresql+psycopg://portfolio:portfolio_dev_password@postgres:5432/portfolio_db
+      WRITE_API_ENABLED: ${WRITE_API_ENABLED:-false}
+      PORTFOLIO_ADMIN_TOKEN: ${PORTFOLIO_ADMIN_TOKEN:-}
+
+    ports:
+      - "127.0.0.1:8000:8000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   portfolio_postgres_data:

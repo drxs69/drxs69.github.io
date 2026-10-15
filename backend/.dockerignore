@@ -1,0 +1,35 @@
+
+# Python virtual environments
+.venv/
+venv/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Tests (not needed in the runtime image)
+tests/
+
+# Credentials
+.env
+.env.*
+!.env.example
+
+# Editor files
+.vscode/
+.idea/
+.DS_Store
+
+# Git files
+.git/
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Documentation and Compose configuration
+compose.yaml
+README.md
