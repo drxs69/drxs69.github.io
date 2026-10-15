@@ -1,4 +1,6 @@
+# =========================
 # Logs
+# =========================
 logs
 *.log
 npm-debug.log*
@@ -7,15 +9,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# =========================
+# Node.js / Vite
+# =========================
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# =========================
+# Editor / OS files
+# =========================
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,10 +30,29 @@ dist-ssr
 *.sln
 *.sw?
 
-node_modules/
-dist/
+# =========================
+# Python environments
+# =========================
+.venv/
+venv/
+
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# =========================
+# Secrets and environment files
+# =========================
 .env
 .env.*
 !.env.example
-.DS_Store
-*.local
+
+# =========================
+# Local databases
+# =========================
+*.db
+*.sqlite
+*.sqlite3

@@ -18,6 +18,7 @@ import { usePreferences } from "./preferences";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
+import BackendTest from "./components/BackendTest";
 
 import Home from "./pages/Home";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -67,12 +68,41 @@ function ScrollManager() {
   return null;
 }
 
+function BackendTestPage() {
+  return (
+    <main className="min-h-[75vh] px-6 pt-28 pb-16">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-8">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
+            Backend Development
+          </p>
+
+          <h1 className="text-3xl font-bold sm:text-4xl">
+            React + FastAPI Integration
+          </h1>
+
+          <p className="mt-3 max-w-2xl text-slate-400">
+            This temporary development page tests whether
+            the React frontend can communicate with the
+            Python FastAPI backend through HTTP requests.
+          </p>
+        </div>
+
+        <BackendTest />
+      </div>
+    </main>
+  );
+}
+
 function AnimatedRoutes() {
   const location = useLocation();
 
   const shouldReduceMotion = useReducedMotion();
   const { motion: motionPreference } = usePreferences();
-  const reduceMotion = Boolean(shouldReduceMotion) || motionPreference === "minimal";
+
+  const reduceMotion =
+    Boolean(shouldReduceMotion) ||
+    motionPreference === "minimal";
 
   return (
     <AnimatePresence
@@ -113,6 +143,13 @@ function AnimatedRoutes() {
             path="/projects/:id"
             element={<ProjectDetail />}
           />
+
+          {import.meta.env.DEV && (
+            <Route
+              path="/backend-test"
+              element={<BackendTestPage />}
+            />
+          )}
 
           <Route
             path="*"
